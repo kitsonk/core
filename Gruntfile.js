@@ -326,6 +326,6 @@ module.exports = function (grunt) {
 	grunt.registerTask('test-runner', [ 'dev', 'intern:runner' ]);
 	grunt.registerTask('test-local', [ 'dev', 'intern:local' ]);
 	grunt.registerTask('test-proxy', [ 'dev', 'intern:proxy' ]);
-	grunt.registerTask('ci', [ 'tslint', 'test' ]);
+	grunt.registerTask('ci', [ 'tslint', 'test', 'exec:codecov' ]);
 	grunt.registerTask('default', [ 'clean', 'dev' ]);
 };
