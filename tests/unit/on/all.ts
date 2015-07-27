@@ -3,7 +3,7 @@ import registerSuite = require('intern!object');
 import assert = require('intern/chai!assert');
 import on, { emit } from 'src/on';
 import Evented from 'src/Evented';
-import 'dojo/has!host-node?./nodeOnly:./browserOnly';
+/*import 'dojo/has!host-node?./nodeOnly:./browserOnly';*/
 
 registerSuite({
 	name: 'events - Evented',

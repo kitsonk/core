@@ -37,6 +37,8 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-cover-ts');
+	grunt.loadNpmTasks('grunt-exec');
 	grunt.loadNpmTasks('grunt-text-replace');
 	grunt.loadNpmTasks('grunt-ts');
 	grunt.loadNpmTasks('grunt-tslint');
@@ -128,6 +130,10 @@ module.exports = function (grunt) {
 			}
 		},
 
+		exec: {
+			codecov: 'cat coverage-final.json | ./node_modules/codecov.io/bin/codecov.io.js'
+		},
+
 		intern: {
 			options: {
 				runType: 'runner',
@@ -135,25 +141,43 @@ module.exports = function (grunt) {
 			},
 			runner: {
 				options: {
-					reporters: [ 'runner', 'lcovhtml' ]
+					reporters: [
+						{ id: 'Runner' },
+						{ id: 'LcovHtml', directory: 'html-report' },
+						{ id: 'JsonCoverage' }
+					]
 				}
 			},
 			local: {
 				options: {
 					config: '<%= devDirectory %>/tests/intern-local',
-					reporters: [ 'runner', 'lcovhtml' ]
+					reporters: [
+						{ id: 'Runner' },
+						{ id: 'LcovHtml', directory: 'html-report' },
+						{ id: 'JsonCoverage' }
+					]
 				}
 			},
 			client: {
 				options: {
 					runType: 'client',
-					reporters: [ 'console', 'lcovhtml' ]
+					reporters: [
+						{ id: 'Pretty' },
+						{ id: 'LcovHtml', directory: 'html-report' },
+						{ id: 'JsonCoverage' }
+					]
 				}
 			},
 			proxy: {
 				options: {
 					proxyOnly: true
 				}
+			}
+		},
+
+		map_coverage_json: {
+			files: {
+				src: 'coverage-final.json'
 			}
 		},
 
@@ -298,7 +322,7 @@ module.exports = function (grunt) {
 		'copy:staticFiles',
 		'dtsGenerator:dist'
 	]);
-	grunt.registerTask('test', [ 'dev', 'intern:client' ]);
+	grunt.registerTask('test', [ 'dev', 'intern:client', 'map_coverage_json' ]);
 	grunt.registerTask('test-runner', [ 'dev', 'intern:runner' ]);
 	grunt.registerTask('test-local', [ 'dev', 'intern:local' ]);
 	grunt.registerTask('test-proxy', [ 'dev', 'intern:proxy' ]);

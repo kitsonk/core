@@ -45,10 +45,6 @@ if (typeof location !== 'undefined' && location.pathname.indexOf('__intern/') > 
 	// Support running unit tests from a web server that isn't the intern proxy
 	loaderBasePath = `${loaderBasePath}/node_modules`;
 }
-export var useLoader = {
-	'host-browser': `${loaderBasePath}/dojo-loader/loader.js`,
-	'host-node': 'dojo-loader'
-};
 
 // Configuration options for the module loader; any AMD configuration options supported by the specified AMD loader
 // can be used here
