@@ -175,7 +175,12 @@ module.exports = function (grunt) {
 			}
 		},
 
-		map_coverage_json: {
+		map_coverage: {
+			options: {
+				reports: {
+					'json': 'coverage-final.json'
+				}
+			},
 			files: {
 				src: 'coverage-final.json'
 			}
@@ -322,7 +327,7 @@ module.exports = function (grunt) {
 		'copy:staticFiles',
 		'dtsGenerator:dist'
 	]);
-	grunt.registerTask('test', [ 'dev', 'intern:client', 'map_coverage_json' ]);
+	grunt.registerTask('test', [ 'dev', 'intern:client', 'map_coverage' ]);
 	grunt.registerTask('test-runner', [ 'dev', 'intern:runner' ]);
 	grunt.registerTask('test-local', [ 'dev', 'intern:local' ]);
 	grunt.registerTask('test-proxy', [ 'dev', 'intern:proxy' ]);
