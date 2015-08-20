@@ -3,6 +3,7 @@ import RequestTimeoutError from './errors/RequestTimeoutError';
 import global from '../global';
 import has from '../has';
 import { RequestOptions, Response, ResponsePromise } from '../request';
+import { generateRequestUrl } from './util';
 
 export interface XhrRequestOptions extends RequestOptions {
 	blockMainThread?: boolean;
@@ -24,13 +25,14 @@ const responseTypeMap: { [key: string]: string; } = {
 
 export default function xhr<T>(url: string, options: XhrRequestOptions = {}): ResponsePromise<T> {
 	const request = new XMLHttpRequest();
+	const requestUrl = generateRequestUrl(url, options);
 	const response: Response<T> = {
 		data: null,
 		nativeResponse: request,
 		requestOptions: options,
 		statusCode: null,
 		statusText: null,
-		url: url,
+		url: requestUrl,
 
 		getHeader(name: string): string {
 			return request.getResponseHeader(name);
@@ -48,7 +50,7 @@ export default function xhr<T>(url: string, options: XhrRequestOptions = {}): Re
 			options.password = decodeURIComponent(auth[1]);
 		}
 
-		request.open(options.method, url, !options.blockMainThread, options.user, options.password);
+		request.open(options.method, requestUrl, !options.blockMainThread, options.user, options.password);
 
 		if (has('xhr2') && options.responseType in responseTypeMap) {
 			request.responseType = responseTypeMap[options.responseType];
@@ -67,8 +69,15 @@ export default function xhr<T>(url: string, options: XhrRequestOptions = {}): Re
 
 				response.statusCode = request.status;
 				response.statusText = request.statusText;
-
-				resolve(response);
+				if (response.statusCode >= 200 && response.statusCode < 400) {
+					resolve(response);
+				}
+				else {
+					reject(response.statusText ?
+						new Error(response.statusText) :
+						new Error('An error prevented completion of the request.')
+					);
+				}
 			}
 		};
 
