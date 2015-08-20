@@ -5,7 +5,7 @@
 		"module": "umd",
 		"noImplicitAny": true,
 		"outDir": "_build/",
-		"removeComments": false,
+		"removeComments": true,
 		"target": "es5",
 		"experimentalDecorators": true,
 		"inlineSources": true,
